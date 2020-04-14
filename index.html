@@ -6,14 +6,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="Converts referrals to MDMs" />
-    <meta name="version" content="0.1.9">
+    <meta name="version" content="0.1.10">
     <link id="favicon" rel="icon" href="https://glitch.com/edit/favicon-app.ico" type="image/x-icon" />
-    <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <!-- https://nostalgic-css.github.io/NES.css/ -->
     <link href="https://unpkg.com/nes.css/css/nes.css" rel="stylesheet" />
     <style>
       body, h1 {
-        font-family: "Press Start 2P", arial, sans-serif;
+        font-family: 'Press Start 2P', arial, cursive;
         margin: 2em;
       }
 
@@ -124,7 +124,7 @@
       PizZipUtils.getBinaryContent(url, callback);
     }
     function generate() {
-      const DEBUG = false;
+      const DEBUG = true;
 
       // Declare referral data
       var raw = document.getElementById("referralRawText").value;
@@ -207,7 +207,7 @@
         // Remove new lines, \t, bullets
         // Bullets https://stackoverflow.com/questions/18266529/how-to-write-regex-for-bullet-space-digit-and-dot/18266778
         result = result
-          .replace(/\r?\n|\r|\t|[\u2022,\u2023,\u25E6,\u2043,\u2219]/g, "")
+          .replace(/\r?\n|\r|\t|[\u2022\u2023\u25E6\u2043\u2219]/g, "")
           .trim();
 
         if (result) {

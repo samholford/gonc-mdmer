@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="Converts referrals to MDMs" />
-    <meta name="version" content="0.1.7">
+    <meta name="version" content="0.1.9">
     <link id="favicon" rel="icon" href="https://glitch.com/edit/favicon-app.ico" type="image/x-icon" />
     <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet" />
     <!-- https://nostalgic-css.github.io/NES.css/ -->
@@ -106,14 +106,12 @@
       
       <section class="nes-container with-title" id="error-container">
         <p class="title">ERRORS</p>
-        <div id="errors">
-          
-        </div>
+        <div id="errors"></div>
       </section>
     </main>
 
     <footer>
-      Made with <a href="https://glitch.com">Glitch</a>! | View <a href="https://glitch.com/edit/?utm_content=project_gonc&utm_source=view_source&utm_medium=button&utm_campaign=glitchButton#!/gonc">source</a>!
+      View source on <a href="https://github.com/samholford/gonc-mdmer">GitHub</a>!
     </footer>
   </body>
   <script type="text/javascript">
@@ -242,7 +240,7 @@
 
 
       // Link to the template docx - see https://docxtemplater.readthedocs.io/en/latest/tag_types.html
-      loadFile("https://cdn.glitch.com/e112132d-3014-4277-9335-2c72757eedc6%2FnewPatientTemplate.docx?v=1586824589594", function(
+      loadFile("https://samholford.github.io/gonc-mdmer/newPatientTemplate.docx", function(
         error,
         content
       ) {

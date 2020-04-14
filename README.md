@@ -9,7 +9,7 @@ The page can be downloaded as an .html file and run locally from the desktop.
 
 ## Help
 
-If its not working. Please [email me](mailto:samholford@gmail.com)
+If its not working. Please [email me](mailto:samholford@gmail.com).
 
 ## Development
 

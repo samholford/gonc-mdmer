@@ -430,7 +430,7 @@
           raw = holder; // Restore raw
         }
 
-        Referral["question"] = getText("FOR THE MDM?", "IS THE PATIENT AWARE");
+        Referral["question"] = getText("FOR THE MDM?", /is the patient|what does the patient know/);
 
 
         if (DEBUG) {

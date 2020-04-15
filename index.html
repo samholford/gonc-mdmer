@@ -12,8 +12,17 @@
     <!-- https://nostalgic-css.github.io/NES.css/ -->
     <link href="https://unpkg.com/nes.css/css/nes.css" rel="stylesheet" />
     <style>
+      @font-face {
+          font-family: 'press_start_2pregular';
+          src: url('fonts/pressstart2p-regular-webfont.ttf') format('truetype'), 
+               url('fonts/pressstart2p-regular-webfont.woff2') format('woff2'),
+               url('fonts/pressstart2p-regular-webfont.woff') format('woff');
+          font-weight: normal;
+          font-style: normal;
+      }
+      
       body, h1 {
-        font-family: 'Press Start 2P', arial, cursive;
+        font-family: 'Press Start 2P', 'press_start_2pregular', arial;
         margin: 2em;
       }
 

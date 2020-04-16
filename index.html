@@ -207,7 +207,8 @@
         // Remove new lines, \t, bullets
         // Bullets https://stackoverflow.com/questions/18266529/how-to-write-regex-for-bullet-space-digit-and-dot/18266778
         result = result
-          .replace(/\r?\n|\r|\t|[\u2022\u2023\u25E6\u2043\u2219]/g, "")
+          .replace(/\r?\n|\r|\t/g, " ") // new lines
+          .replace(/[\u2022\u2023\u25E6\u2043\u2219]/g, "") // bullets
           .trim();
 
         if (result) {

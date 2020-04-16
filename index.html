@@ -12,17 +12,8 @@
     <!-- https://nostalgic-css.github.io/NES.css/ -->
     <link href="https://unpkg.com/nes.css/css/nes.css" rel="stylesheet" />
     <style>
-      @font-face {
-          font-family: 'press_start_2pregular';
-          src: url('fonts/pressstart2p-regular-webfont.ttf') format('truetype'), 
-               url('fonts/pressstart2p-regular-webfont.woff2') format('woff2'),
-               url('fonts/pressstart2p-regular-webfont.woff') format('woff');
-          font-weight: normal;
-          font-style: normal;
-      }
-      
       body, h1 {
-        font-family: 'Press Start 2P', 'press_start_2pregular', arial;
+        font-family: 'Press Start 2P', arial;
         margin: 2em;
       }
 
@@ -133,7 +124,7 @@
       PizZipUtils.getBinaryContent(url, callback);
     }
     function generate() {
-      const DEBUG = true;
+      const DEBUG = false;
 
       // Declare referral data
       var raw = document.getElementById("referralRawText").value;
@@ -216,7 +207,8 @@
         // Remove new lines, \t, bullets
         // Bullets https://stackoverflow.com/questions/18266529/how-to-write-regex-for-bullet-space-digit-and-dot/18266778
         result = result
-          .replace(/\r?\n|\r|\t|[\u2022\u2023\u25E6\u2043\u2219]/g, "")
+          .replace(/\r?\n|\r|\t/g, " ") // new lines
+          .replace(/[\u2022\u2023\u25E6\u2043\u2219]/g, "") // bullets
           .trim();
 
         if (result) {
@@ -439,7 +431,7 @@
           raw = holder; // Restore raw
         }
 
-        Referral["question"] = getText("FOR THE MDM?", "IS THE PATIENT AWARE");
+        Referral["question"] = getText("FOR THE MDM?", /is the patient|what does the patient know/);
 
 
         if (DEBUG) {

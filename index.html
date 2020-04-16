@@ -6,14 +6,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="Converts referrals to MDMs" />
-    <meta name="version" content="0.1.10">
-    <link id="favicon" rel="icon" href="https://glitch.com/edit/favicon-app.ico" type="image/x-icon" />
+    <meta name="version" content="0.1.11">
+    <link id="favicon" rel="icon" href="favicon.ico" type="image/x-icon" />
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <!-- https://nostalgic-css.github.io/NES.css/ -->
     <link href="https://unpkg.com/nes.css/css/nes.css" rel="stylesheet" />
     <style>
-      body, h1 {
-        font-family: 'Press Start 2P', arial;
+      body, h1, textarea, button {
+        font-family: 'Press Start 2P', OCR A Extended, arial;
+        font-weight: bold;
         margin: 2em;
       }
 
@@ -217,6 +218,7 @@
               "DD-MM-YYYY",
               "DD-MMMM-YYYY",
               "DD-MMM-YYYY",
+              "Do-MMMM-YYYY",
               "DD-MM-YY"
             ]);
             if (date.isValid()) {
@@ -480,16 +482,20 @@
       document.getElementById("submitReferral").classList.add("is-disabled")
     });
     
-    document.getElementById("referralRawText").addEventListener("keyup", function() {
-        var name = document.getElementById("referralRawText").value;
-        if (name.length > 3) {
-          document.getElementById("submitReferral").disabled = false;
-          document.getElementById("submitReferral").classList.remove("is-disabled")    
-        } else {
-          document.getElementById("submitReferral").disabled = true;
-          document.getElementById("submitReferral").classList.add("is-disabled")
-        }
-    });
+    function toggleButton() {
+      var name = document.getElementById("referralRawText").value;
+      if (name.length > 3) {
+        document.getElementById("submitReferral").disabled = false;
+        document.getElementById("submitReferral").classList.remove("is-disabled")    
+      } else {
+        document.getElementById("submitReferral").disabled = true;
+        document.getElementById("submitReferral").classList.add("is-disabled")
+      }
+    }
+    
+    document.getElementById("referralRawText").addEventListener("keyup", toggleButton, false);
+    document.getElementById("referralRawText").addEventListener("change", toggleButton, false);
+    document.getElementById("referralRawText").focus();
     
   </script>
 </html>

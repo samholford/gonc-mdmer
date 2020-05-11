@@ -98,10 +98,19 @@ function generate() {
       if (date) {
         var date = moment.utc(result, [
           "DD-MM-YYYY",
+          "DD/MM/YYYY",
           "DD-MMMM-YYYY",
+          "DD/MMMM/YYYY",
           "DD-MMM-YYYY",
+          "DD/MMM/YYYY",
           "Do-MMMM-YYYY",
-          "DD-MM-YY"
+          "Do/MMMM/YYYY",
+          "DD-MM-YY",
+          "DD/MM/YY",
+          "DD-M-YY",
+          "DD/M/YY",
+          "D-M-YY",
+          "D/M/YY"
         ]);
         if (date.isValid()) {
           return date.format("DD/MM/YYYY");

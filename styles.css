@@ -1,11 +1,16 @@
 body, h1, textarea, button {
   font-family: 'Press Start 2P', OCR A Extended, arial;
   font-weight: bold;
-  margin: 2em;
+  margin: 1em;
 }
 
-body {
-  margin: 2em 1em;
+.container {
+  max-width: 980px;
+  margin: 0 auto;
+}
+
+.nes-container {
+  margin-bottom: 1em;
 }
 
 section.message-list {
@@ -36,14 +41,32 @@ section.message-list {
 }
 
 #error-container {
-  margin-top: 1em;
   color: red;
-  display: none;
+  margin-top: 1em;
 }
 
 .icon-list > .blur-filter {
   filter: blur(10px);
 }
+
+table .row-complete {
+  background-color: #92cc41;
+}
+
+table .row-incomplete {
+  background-color: #ffae2a;
+}
+
+table .row-extra {
+  background-color: #e76e55;
+}
+
+.hidden {
+  display: none !important;
+}
+
+
+
 
 footer {
   margin-top: 3em;

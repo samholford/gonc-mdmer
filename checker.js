@@ -49,7 +49,7 @@
     mdmList = [];
 
     //Return array of rank-name-NHI
-    var matches = rawText.match(/(\d\.)(.*?)(\W[A-Z]{3}[0-9]{4}\W)/g);
+    var matches = rawText.match(/([0-9]{1,2}\.\W)([\s\S]*?)([A-Z]{3}[0-9]{4})/g);
 
     for (var i = 0; i < matches.length; i++) {
       // Break it down

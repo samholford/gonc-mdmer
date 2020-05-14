@@ -1,19 +1,17 @@
 # GONC MDMer
 
-Reformats a new ADHB GONC referral into an MDM-ready docx
-Runs locally without uploading any patient details
+Reformats a new ADHB GONC referral into an MDM-ready docx.
+Checks the MDM list against prepared MDM templates.
 
-Check it out at: [https://samholford.github.io/gonc-mdmer/](https://samholford.github.io/gonc-mdmer/)
+[https://samholford.github.io/gonc-mdmer/](https://samholford.github.io/gonc-mdmer/)
 
+## Security first
+Runs locally without uploading or transmitting any patient details
 The page can be downloaded as an .html file and run locally from the desktop.
 
 ## Help
 
-If its not working. Please [email me](mailto:samholford@gmail.com).
-
-## Development
-
-This project also lives on [gonc.glitch.me](https://gonc.glitch.me)
+If it is not working. Please [email me](mailto:samholford@gmail.com).
 
 ## Updating the template
 

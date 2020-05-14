@@ -10,14 +10,14 @@
   var filesProcessed = 0;
   var filesToProcess = 0;
 
-  dropArea.addEventListener('dragover', (event) => {
+  dropArea.addEventListener('dragover', function(event) {
     event.stopPropagation();
     event.preventDefault();
     // Style the drag-and-drop as a "copy file" operation.
     event.dataTransfer.dropEffect = 'copy';
   });
 
-  dropArea.addEventListener('drop', (event) => {
+  dropArea.addEventListener('drop', function(event) {
     event.stopPropagation();
     event.preventDefault();
     resetErrors();

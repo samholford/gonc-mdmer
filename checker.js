@@ -7,7 +7,7 @@
 
   const dropArea = document.getElementById('mdmFileDropArea');
   var mdmList = [], mdmFiles = [], rows = [];
-  var filesProcessed = 0;
+  var rawText = '';
   var filesToProcess = 0;
 
   dropArea.addEventListener('dragover', function(event) {
@@ -37,21 +37,29 @@
   document.getElementById("mdmListInput").addEventListener("change", readList, false);
 
   function readList() {
-    resetErrors();
-    parseList();
-    compare();
-    printTable(rows);
-    // Prevent IE from remembering the input over refreshes
-    //document.getElementById('mdmListInput').value = "";
+    var listText = document.getElementById("mdmListInput").value.trim();
+    if (listText.length > 50 && listText != rawText) {
+      rawText = listText;
+      // Clear input
+      document.getElementById("mdmListInput").value = '';
+      resetErrors();
+      parseList();
+      compare();
+      printTable(rows);
+    }
   }
 
   function parseList() {
-    var rawText = document.getElementById("mdmListInput").value;
     // Reset
     mdmList = [];
 
     //Return array of rank-name-NHI
     var matches = rawText.match(/([0-9]{1,2}\.\W)([\s\S]*?)([A-Z]{3}[0-9]{4})/g);
+
+    if (!matches) {
+      showError('Failed to parse the MDM list');
+      return;
+    }
 
     for (var i = 0; i < matches.length; i++) {
       // Break it down
@@ -168,18 +176,21 @@
 
       // Apply status colours
       if (rows[i][2] == true && rows[i][3] == 'complete') {
-        newRow.classList.add("row-complete");
+        newRow.classList.add("row-green");
         addCell(newRow, 'Done', 5);
       } else if (rows[i][2] == false) {
         ready = false;
-        newRow.classList.add("row-extra");
+        newRow.classList.add("row-red");
         addCell(newRow, 'Not listed for MDM', 5);
         if (rows[i][4] == 'complete') {
           addCell(newRow, 'star', 4);
         }
+      } else if (rows[i][3] == 'none') {
+        ready = false;
+        newRow.classList.add("row-red");
       } else {
         ready = false;
-        newRow.classList.add("row-incomplete");
+        newRow.classList.add("row-orange");
       }
     }
     // Show the table

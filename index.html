@@ -43,6 +43,7 @@
             name="referralRawText"
             id="referralRawText"
             placeholder="Paste referral text here"
+            autocomplete=“off”
             rows="5"
           ></textarea>
           <button class="nes-btn is-primary is-disabled" id="submitReferral" disabled>
@@ -58,7 +59,10 @@
             <div class="nes-balloon from-left">
               <div class="nes-field">
                 <label for="mdmListInput">Paste MDM list here</label>
-                <textarea id="mdmListInput" class="nes-textarea" ></textarea>
+                <textarea
+                  id="mdmListInput"
+                  class="nes-textarea"
+                  autocomplete=“off”></textarea>
               </div>
             </div>
           </section>
@@ -79,8 +83,8 @@
                   <th></th>
                   <th>Name</th>
                   <th>NHI</th>
-                  <th>Listed for MDM</th>
-                  <th>Template</th>
+                  <th>Listed</th>
+                  <th>Templated</th>
                   <th>Status</th>
                 </tr>
               </thead>

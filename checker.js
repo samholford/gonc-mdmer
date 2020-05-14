@@ -33,6 +33,10 @@
     }
   }
 
+  document.getElementById("mdmListInput").addEventListener("click", function() {
+    // Prevent IE from remembering the input over refreshes
+    document.getElementById("mdmListInput").value = '';
+  });
   document.getElementById("mdmListInput").addEventListener("keyup", readList, false);
   document.getElementById("mdmListInput").addEventListener("change", readList, false);
 
@@ -41,6 +45,7 @@
     parseList();
     compare();
     printTable(rows);
+    document.getElementById('mdmListInput').value = "";
   }
 
   function parseList() {

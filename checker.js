@@ -42,7 +42,7 @@
     compare();
     printTable(rows);
     // Prevent IE from remembering the input over refreshes
-    document.getElementById('mdmListInput').value = "";
+    //document.getElementById('mdmListInput').value = "";
   }
 
   function parseList() {

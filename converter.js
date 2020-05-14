@@ -387,7 +387,7 @@ document.getElementById("submitReferral").addEventListener("click", function() {
 
 function toggleButton() {
   var name = document.getElementById("referralRawText").value;
-  if (name.length > 3) {
+  if (name.length > 50) {
     document.getElementById("submitReferral").disabled = false;
     document.getElementById("submitReferral").classList.remove("is-disabled")
   } else {

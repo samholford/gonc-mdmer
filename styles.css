@@ -49,15 +49,15 @@ section.message-list {
   filter: blur(10px);
 }
 
-table .row-complete {
+table .row-green {
   background-color: #92cc41;
 }
 
-table .row-incomplete {
+table .row-orange {
   background-color: #ffae2a;
 }
 
-table .row-extra {
+table .row-red {
   background-color: #e76e55;
 }
 

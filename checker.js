@@ -53,23 +53,42 @@
     // Reset
     mdmList = [];
 
-    //Return array of rank-name-NHI
-    var matches = rawText.match(/([0-9]{1,2}\.\W)([\s\S]*?)([A-Z]{3}[0-9]{4})/g);
+    // Split list by NHIs
+    // Note split keeps the NHI as every second element e.g. ['raw text', 'NHI', 'raw text', 'NHI']
+    var matches = rawText.split(/([A-Z]{3}\d{4})/);
 
     if (!matches) {
       showError('Failed to parse the MDM list');
       return;
     }
 
-    for (var i = 0; i < matches.length; i++) {
-      // Break it down
+    // Loop through array. i+1 so that we ignore the last bit of text after the last NHI
+    for (var i = 0; i+1 < matches.length; i++) {
+      // Get all text between NHIs
       var line = matches[i];
+
       // Get NHI
-      var nhi = line.match(/[A-Z]{3}[0-9]{4}/g)[0];
-      // Remove NHI from remainder
-      var name = line.replace(nhi, "");
+      var nhi = matches[i+1];
+
+      // Split line by number (DD.)
+      var lineSplit = line.split(/\d{1,2}\./);
+
+      // Keep last bit (text after last number)
+      var name = (lineSplit.length > 1) ? lineSplit[lineSplit.length-1] : line;
+
+      // Find comma
+      var commaIndex = name.indexOf(",");
+
+      // Remove text after the comma
+      if (commaIndex != -1) {
+        name = name.substring(0, commaIndex);
+      }
+
+      name = name.trim();
 
       mdmList.push([name, nhi]);
+      // Increment index again so skip NHI
+      i++;
     }
   }
 
@@ -121,15 +140,19 @@
       // Insert a cell in the row at index 0
       var newCell = row.insertCell(index);
 
+      // Left align the first two columns
+      if (index <2) {
+        newCell.classList.add("left-align");
+      }
       switch(content) {
         case 'star':
-          newCell.innerHTML = '<i class="nes-icon is-large star"></i>';
+          newCell.innerHTML = '<i class="nes-icon star"></i>';
           break;
         case 'halfstar':
-          newCell.innerHTML = '<i class="nes-icon is-large star is-half"></i>';
+          newCell.innerHTML = '<i class="nes-icon star is-half"></i>';
           break;
         case 'nostar':
-          newCell.innerHTML = '<i class="nes-icon is-large star is-empty"></i>';
+          newCell.innerHTML = '<i class="nes-icon star is-empty"></i>';
           break;
         default:
           var newText  = document.createTextNode(content);
@@ -223,7 +246,7 @@
             // read the content of the file with PizZip
             var zip = new PizZip(e.target.result);
 
-            // that, or a good ol' for(var entryName in zip.files)
+            // Cycle through each file contained with the docx container
             $.each(zip.files, function (index, zipEntry) {
               // Docx is a zip file of many xml files, we only want 'word/document.xml'
               // Also, exclude MDM lists (contain MDM in file name)

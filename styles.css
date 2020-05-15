@@ -49,6 +49,14 @@ section.message-list {
   filter: blur(10px);
 }
 
+table td {
+  font-size: 12px;
+}
+
+table td.left-align {
+  text-align: left;
+}
+
 table .row-green {
   background-color: #92cc41;
 }

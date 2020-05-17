@@ -304,8 +304,8 @@
             var zip = new PizZip(e.target.result);
 
             // Cycle through each file contained with the docx container
-            $.each(zip.files, function (index, zipEntry) {
-            //for (const zipEntry in zip.files) {
+            for (const property in zip.files) {
+              var zipEntry = zip.files[property];
               // Docx is a zip file of many xml files, we only want 'word/document.xml'
               // Also, exclude MDM lists (contain MDM in file name)
               if (zipEntry.name == 'word/document.xml') {
@@ -339,7 +339,7 @@
                   }
                 }
               }
-            });
+            }
           } catch(e) {
             showError('Error reading ' + theFile.name + ' : ' + e.message);
           }

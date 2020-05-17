@@ -302,9 +302,10 @@
           try {
             // read the content of the file with PizZip
             var zip = new PizZip(e.target.result);
+            var property;
 
             // Cycle through each file contained with the docx container
-            for (const property in zip.files) {
+            for (property in zip.files) {
               var zipEntry = zip.files[property];
               // Docx is a zip file of many xml files, we only want 'word/document.xml'
               // Also, exclude MDM lists (contain MDM in file name)

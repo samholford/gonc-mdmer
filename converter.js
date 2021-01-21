@@ -13,7 +13,7 @@ function resetErrors() {
 
 // If a 2-digit year is used, assume less than 100 years old
 moment.parseTwoDigitYear = function(yearString) {
-  return parseInt(yearString) + (parseInt(yearString) > 20 ? 1900 : 2000);
+  return parseInt(yearString) + (parseInt(yearString) > 23 ? 1900 : 2000);
 };
 
 function loadFile(url, callback) {

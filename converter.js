@@ -1,6 +1,19 @@
+function showError(msg) {
+  var node = document.createElement("LI");
+  var textnode = document.createTextNode(msg);
+  node.appendChild(textnode);
+  document.getElementById("errors").appendChild(node);
+  document.getElementById("error-container").classList.remove("hidden");
+}
+
+function resetErrors() {
+  document.getElementById("errors").innHTML = "";
+  document.getElementById("error-container").classList.add("hidden");
+}
+
 // If a 2-digit year is used, assume less than 100 years old
 moment.parseTwoDigitYear = function(yearString) {
-  return parseInt(yearString) + (parseInt(yearString) > 20 ? 1900 : 2000);
+  return parseInt(yearString) + (parseInt(yearString) > 23 ? 1900 : 2000);
 };
 
 function loadFile(url, callback) {
@@ -8,6 +21,7 @@ function loadFile(url, callback) {
 }
 function generate() {
   const DEBUG = false;
+  resetErrors();
 
   // Declare referral data
   var raw = document.getElementById("referralRawText").value;
@@ -163,10 +177,8 @@ function generate() {
           })
           .join("\n");
         console.log("errorMessages", errorMessages);
-        document.getElementById("errors").innerHTML = errorMessages;
-        document.getElementById("error-container").style.display = "block";
-        // errorMessages is a humanly readable message looking like this :
-        // 'The tag beginning with "foobar" is unopened'
+        showError(errorMessages);
+        // errorMessages is a humanly readable message
       }
       throw error;
     }
@@ -375,9 +387,9 @@ document.getElementById("submitReferral").addEventListener("click", function() {
 
 function toggleButton() {
   var name = document.getElementById("referralRawText").value;
-  if (name.length > 3) {
+  if (name.length > 50) {
     document.getElementById("submitReferral").disabled = false;
-    document.getElementById("submitReferral").classList.remove("is-disabled")    
+    document.getElementById("submitReferral").classList.remove("is-disabled")
   } else {
     document.getElementById("submitReferral").disabled = true;
     document.getElementById("submitReferral").classList.add("is-disabled")

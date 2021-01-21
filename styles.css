@@ -1,11 +1,25 @@
 body, h1, textarea, button {
   font-family: 'Press Start 2P', OCR A Extended, arial;
   font-weight: bold;
-  margin: 2em;
+  margin: 1em;
 }
 
-body {
-  margin: 2em 1em;
+h1 {
+  margin-left: 0.5em;
+}
+
+.container {
+  max-width: 980px;
+  margin: 0 auto;
+}
+
+.nes-container {
+  margin-bottom: 1em;
+}
+
+.dedication {
+  font-size: 8px;
+  line-height: 1;
 }
 
 section.message-list {
@@ -36,14 +50,40 @@ section.message-list {
 }
 
 #error-container {
-  margin-top: 1em;
   color: red;
-  display: none;
+  margin-top: 1em;
 }
 
 .icon-list > .blur-filter {
   filter: blur(10px);
 }
+
+table td {
+  font-size: 12px;
+}
+
+table td.left-align {
+  text-align: left;
+}
+
+table .row-green {
+  background-color: #92cc41;
+}
+
+table .row-orange {
+  background-color: #ffae2a;
+}
+
+table .row-red {
+  background-color: #e76e55;
+}
+
+.hidden {
+  display: none !important;
+}
+
+
+
 
 footer {
   margin-top: 3em;

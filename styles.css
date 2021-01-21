@@ -4,6 +4,10 @@ body, h1, textarea, button {
   margin: 1em;
 }
 
+h1 {
+  margin-left: 0.5em;
+}
+
 .container {
   max-width: 980px;
   margin: 0 auto;
@@ -11,6 +15,11 @@ body, h1, textarea, button {
 
 .nes-container {
   margin-bottom: 1em;
+}
+
+.dedication {
+  font-size: 8px;
+  line-height: 1;
 }
 
 section.message-list {

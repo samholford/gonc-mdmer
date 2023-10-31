@@ -63,8 +63,8 @@ function generate() {
       return arr.indexOf(obj) != -1;
     }
 
-    if (include(["Date", "Type", "Procedure", "Location", "Surgeon"], start)) {
-      if (start == "Surgeon" || start == "Location") {
+    if (include(["Date", "Type", "Procedure", "Location", "Surgeon", "Name of the lab"], start)) {
+      if (start == "Surgeon" || start == "Location" || start == "Name of the lab") {
         notProvided = "";
       } else {
         notProvided = start + " not provided";
@@ -322,7 +322,7 @@ function generate() {
         obj = {
           histoType: getText("Type", "Date", true),
           histoDate: getText("Date", "Location", true, true),
-          histoDHB: getText("Location", "Key findings", true),
+          histoDHB: getText("Name of the lab", "Key findings", true),
           histoFindings: getText("Findings", "LOOPEND", true)
         };
         if (

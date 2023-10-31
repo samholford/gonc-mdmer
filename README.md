@@ -20,7 +20,7 @@ If it is not working. Please [email me](mailto:samholford@gmail.com).
 
 ## Changes
 
-31 Oct 2023
+31 Oct 2023 Version 1.1
 - Histo heading updated to accepted "Name of the lab"
 - Library files updated to latest
 - License added

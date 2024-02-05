@@ -37,6 +37,7 @@
       if (listInputText == '' && fileInputTextVersion > 0) {
         // MDM list not supplied by input box and an MDM list was dragged in
         var list = readListFromFile(fileInputText);
+        console.log("list: " + list);
         mdmList = parseList(list);
       }
       var rows = compare();
@@ -85,8 +86,9 @@
 
     // remove xml:space="preserve" from text
     content = content.replace(/ xml:space="preserve"/g, "");
-
-    var patients = content.split('w:val="1"');
+    
+    //Split patients by an abstract XML code used to keep tract of the bulleted list, in this case 13
+    var patients = content.split('w:val="13"');
 
     // For each patient
     for (var i = 1; i < patients.length; i++) {
@@ -108,7 +110,6 @@
     // Note split keeps the NHI as every second element e.g. ['raw text', 'NHI', 'raw text', 'NHI']
     var matches = cleanString.split(/([A-Z]{3}\d{4})/);
     var parsedList = [];
-
     if (!matches) {
       showError('Failed to parse the MDM list');
       return;
@@ -137,7 +138,7 @@
       }
 
       name = name.trim();
-
+      
       parsedList.push({
         name: name,
         nhi: nhi

@@ -24,3 +24,6 @@ If it is not working. Please [email me](mailto:samholford@gmail.com).
 - Histo heading updated to accepted "Name of the lab"
 - Library files updated to latest
 - License added
+
+5 Feb 2024 Version 1.1.1
+- Fix: List checker not working following change in list format

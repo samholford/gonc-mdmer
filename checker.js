@@ -37,7 +37,6 @@
       if (listInputText == '' && fileInputTextVersion > 0) {
         // MDM list not supplied by input box and an MDM list was dragged in
         var list = readListFromFile(fileInputText);
-        console.log("list: " + list);
         mdmList = parseList(list);
       }
       var rows = compare();

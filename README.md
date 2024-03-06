@@ -27,3 +27,6 @@ If it is not working. Please [email me](mailto:samholford@gmail.com).
 
 5 Feb 2024 Version 1.1.1
 - Fix: List checker not working following change in list format
+
+6 Mar 2024 Version 1.2
+- Feature: Dynamicly correct YY year to YYYY based on current year

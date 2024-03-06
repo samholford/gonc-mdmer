@@ -11,9 +11,10 @@ function resetErrors() {
   document.getElementById("error-container").classList.add("hidden");
 }
 
-// If a 2-digit year is used, assume less than 100 years old
+// If a 2-digit year is used, assume no more than 1 year in future
 moment.parseTwoDigitYear = function(yearString) {
-  return parseInt(yearString) + (parseInt(yearString) > 23 ? 1900 : 2000);
+  var currentYear = moment().get('year') - 2000;
+  return parseInt(yearString) + (parseInt(yearString) > ( currentYear + 1) ? 1900 : 2000);
 };
 
 function loadFile(url, callback) {

@@ -20,6 +20,7 @@ moment.parseTwoDigitYear = function(yearString) {
 function loadFile(url, callback) {
   PizZipUtils.getBinaryContent(url, callback);
 }
+
 function generate() {
   const DEBUG = false;
   resetErrors();
@@ -201,7 +202,6 @@ function generate() {
       raw = raw.replace(/Referral - Super regional Gynaecology MDM \(Auckland\)/ig, '');
       // Remove footer text from Midlands referrals allowing for random spaces in the NHI and the word Generated
       raw = raw.replace(/N\s*H\s*I\s*:\s*[A-Z]\s*[A-Z]\s*[A-Z]\s*\d\s*\d\s*[A-Z0-9]\s*[A-Z0-9]\s*Date G\s*enerated: \d{1,2} \w{3} \d{4} Page number: \d+ of \d+/gi, '');
-      //raw = raw.replace(/Date G\s*enerated: \d{1,2} \w{3} \d{4} Page number: \d+ of \d+/gi, '');
     }
 
     // Extract referral content
@@ -373,7 +373,7 @@ function generate() {
       // Make loop hold just the histology text
       loop = raw
         .split("HISTOLOGY")[1]
-        .split("WHAT IS THE QUESTION")[0]
+        .split(/WHAT IS THE QUESTION/i)[0]
         .trim();
       //loop = loop.substring(loop.indexOf('type'))
       // Make loop an array of each specimen
@@ -414,14 +414,13 @@ function generate() {
       // render the document (replace all occurrences of {first_name} by John, {last_name} by Doe, ...)
       doc.render(Referral);
     } catch (error) {
-      // Catch rendering errors (errors relating to the rendering of the template : angularParser throws an error)
       errorHandler(error);
     }
 
     var firstName = Referral["patientName"].split(/\s(.+)/)[0].toLowerCase(); //everything before the first space
     var lastName = Referral["patientName"].split(/\s(.+)/)[1];
     firstName = firstName[0].toUpperCase() + firstName.slice(1); // Convert firstname is sentence case
-    var fileName = lastName.toUpperCase() + " " + firstName + " " + Referral["nhi"] + ".docx";
+    var fileName = lastName.toUpperCase() + " " + firstName + ".docx";
 
     var out = doc.getZip().generate({
       type: "blob",
@@ -442,7 +441,7 @@ document.getElementById("submitReferral").addEventListener("click", function() {
   document.getElementById("errors").innerHTML = "";
   document.getElementById("error-container").style.display = "none";
   generate();
-  document.getElementById("referralRawText").placeholder = 'Paste another one!'
+  document.getElementById("referralRawText").placeholder = 'Let\'s do another one!'
   document.getElementById("referralRawText").value = '';
   document.getElementById("submitReferral").disabled = true;
   document.getElementById("submitReferral").classList.add("is-disabled")
@@ -461,3 +460,39 @@ function toggleButton() {
 
 document.getElementById("referralRawText").addEventListener("keyup", toggleButton, false);
 document.getElementById("referralRawText").addEventListener("change", toggleButton, false);
+
+
+// Drag and drop referral docx to automatically parse
+const referralRawText = document.getElementById('referralRawText');
+
+// Prevent default drag behaviours
+['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+    referralRawText.addEventListener(eventName, e => e.preventDefault(), false);
+    referralRawText.addEventListener(eventName, e => e.stopPropagation(), false);
+});
+
+referralRawText.addEventListener('drop', async function(event) {
+    const file = event.dataTransfer.files[0];
+    const config = {
+        outputErrorToConsole: false,
+        newlineDelimiter: '\n',
+        ignoreNotes: false,
+        putNotesAtLast: false
+    };
+    
+    if (!file.name.includes(".docx")) {
+      showError("Incompatible file type");
+    } else {
+      try {
+          const arrayBuffer = await file.arrayBuffer();
+          const result = await officeParser.parseOfficeAsync(arrayBuffer, config);
+          referralRawText.value = result;
+          toggleButton();
+          document.getElementById("submitReferral").click();
+      } catch (error) {
+          showError(`Error processing ${file.name}:`, error);
+          console.error(`Error processing ${file.name}:`, error);
+      }
+    }
+
+});

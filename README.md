@@ -34,7 +34,11 @@ If it is not working. Please [email me](mailto:samholford@gmail.com).
 6 Mar 2024 Version 1.2
 - Feature: Dynamically correct YY year to YYYY based on current year
 
-25 Apr 2025 Version 1.3
+26 Apr 2025 Version 1.3
 - Compatibility with Midlands referrals
 - Ready for 2026 NHI format changes
 - Library files updated to latest
+
+27 Apr 2025 Version 1.4
+- Drag and drop a referral docx to immediately parse
+- Replacement of file reading library to improve reliability of list checker

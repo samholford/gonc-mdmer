@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="Converts referrals to MDMs and checks against the MDM list" />
     <meta name="author" content="Sam Holford - Operating Systems Ltd">
-    <meta name="version" content="1.3">
+    <meta name="version" content="1.4">
 
     <link id="favicon" rel="icon" href="favicon.ico" type="image/x-icon" />
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
@@ -17,6 +17,7 @@
     <script src="lib/pizzip-3.1.8.min.js"></script>
     <script src="lib/FileSaver-2.0.4.js"></script>
     <script src="lib/pizzip-utils-3.1.8.min.js"></script>
+    <script src="lib/officeParserBundle@5.1.0.js"></script>
     <script src="lib/moment-2.30.1.min.js"></script>
   </head>
   <body>
@@ -41,7 +42,7 @@
             class="nes-textarea"
             name="referralRawText"
             id="referralRawText"
-            placeholder="Paste referral text here"
+            placeholder="Paste referral text here or drop in a referral in docx format"
             autocomplete=“off”
             rows="5"
           ></textarea>

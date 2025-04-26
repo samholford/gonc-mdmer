@@ -2,7 +2,7 @@ const dropArea = document.getElementById('mdmFileDropArea');
 const nhiPattern = /([A-Z]{3}\d{2}[A-Z0-9]{2})/g;
 let mdmList = [], mdmFiles = [];
 let listInputText = '';
-let mdmListText, fileInputTextVersion, filesToProcess;
+let mdmListText, rawText, fileInputTextVersion, filesToProcess;
 
 // Prevent default drag behaviours
 ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
@@ -12,23 +12,20 @@ let mdmListText, fileInputTextVersion, filesToProcess;
 
 dropArea.addEventListener('drop', async function(event) {
     const files = event.dataTransfer.files;
-    const config = {
-        outputErrorToConsole: false,
-        newlineDelimiter: '\n',
-        ignoreNotes: false,
-        putNotesAtLast: false
-    };
+    const processingPromises = [];
     
     resetErrors();
     filesToProcess = event.dataTransfer.files.length;
     fileInputTextVersion = 0;
-    fileInputText = '';
+    rawText = '';
     mdmFiles = [];
 
     for (const file of files) {
-        try {
-            const arrayBuffer = await file.arrayBuffer();
-            const result = await officeParser.parseOfficeAsync(arrayBuffer, config);
+        const arrayBuffer = await file.arrayBuffer();
+        const processingPromise = mammoth.extractRawText({arrayBuffer: arrayBuffer})
+        .then(function(result){
+            rawText = result.value; // The raw text
+            var messages = result.messages;
             
             let fileName = file.name.replace('.docx', '');
             if (fileName.indexOf('MDM') != -1) {
@@ -37,12 +34,12 @@ dropArea.addEventListener('drop', async function(event) {
               if (listNumber > fileInputTextVersion) {
                 // More recent version found
                 fileInputTextVersion = listNumber;
-                mdmListText = result;
+                mdmListText = rawText;
               }
             } else {
               // Patient
               //let nhi = fileName.match(nhiPattern)[0]; // Gets NHI from file name instead of docx content
-              let nhi = result.match(nhiPattern)[0];
+              let nhi = rawText.match(nhiPattern)[0];
               fileName = fileName.replace(nhiPattern, '');
               // Check for # in filename indicated incomplete
               if (fileName.substring(0,1) == '#') {
@@ -60,28 +57,84 @@ dropArea.addEventListener('drop', async function(event) {
                 });
               }
             }
-
-        } catch (error) {
-            console.error(`Error processing ${file.name}:`, error);
-        }
+      })
+      .catch(function(error) {
+          console.error(error);
+      }); 
+      
+      // Collect promises
+      processingPromises.push(processingPromise);  
     }
     
-    // Extract an array of NHIs from the MDM list
-    //console.log(mdmListText);
-    mdmList = mdmListText.match(nhiPattern) || [];
+    // Wait for all mammoth.extractRawText() promises to finish before continuing
+    await Promise.all(processingPromises);
+    
+    mdmList = parseList(rawText);
     let rows = compare();
     printTable(rows);
+    
 });
+
+function parseList(list) {
+  var cleanString = list.replace(/NDHB|BOPDHB|CMDHB|ADHB|Waikato|LDHB|WDHB|Pvt|DHB/g, '');
+  cleanString = cleanString.replace(/^[\s\S]*?\bProblem\b[\s\r\n]*\bHistology\b[\s\r\n]*\bRadiology\b[\s\r\n]*/i, '\n\n\n\n'); // Replace preamble with quad line breaks
+  
+  const keepAfterLastQuadrupleLineBreak = text => {
+    const parts = text.split(/(?:\r?\n){4}/g).map(p => p.trim()).filter(Boolean);
+    return parts.length > 0 ? parts[parts.length - 1] : text;
+  };
+  
+  // Split list by NHIs
+  // Note split keeps the NHI as every second element e.g. ['raw text', 'NHI', 'raw text', 'NHI']
+  var matches = cleanString.split(nhiPattern);
+  var parsedList = [];
+  if (!matches) {
+    showError('Failed to parse the MDM list');
+    return;
+  }
+
+  // Loop through array. i+1 so that we ignore the last bit of text after the last NHI
+  for (var i = 0; i+1 < matches.length; i++) {
+    // Get all text between NHIs
+    var line = matches[i];
+   
+    // Get NHI
+    var nhi = matches[i+1].replace(/\s+/g, ''); // Remove any white space
+    
+    // Split line by quadruple line break
+    //var name = line.split(/\r?\n\r?\n\r?\n\r?\n/).slice(1).join('');
+    
+    var name = keepAfterLastQuadrupleLineBreak(line);
+    
+    // Find comma
+    var commaIndex = name.indexOf(",");
+
+    // Remove text after the comma
+    if (commaIndex != -1) {
+      name = name.substring(0, commaIndex);
+    }
+
+    name = name.trim();
+    
+    parsedList.push({
+      name: name,
+      nhi: nhi
+    });
+    // Increment index again so skip NHI
+    i++;
+  }
+  return parsedList;
+}
 
 function compare() {
   let matched = [], rows = [];
   for (let i = 0; i <mdmList.length; i++) {
     let template = 'none';
     for (let j = 0; j<mdmFiles.length; j++) {
-      if (mdmList[i] == mdmFiles[j].nhi) {
+      if (mdmList[i].nhi == mdmFiles[j].nhi) {
         // NHI match
         template = mdmFiles[j].status; // 'incomplete' or 'complete'
-        matched.push(mdmList[i]);
+        matched.push(mdmList[i].nhi);
         rows.push({
           name: mdmFiles[j].name,
           nhi: mdmFiles[j].nhi,
@@ -93,8 +146,8 @@ function compare() {
     }
     if (template == 'none') {
       rows.push({
-        name: '',
-        nhi: mdmList[i],
+        name: mdmList[i].name,
+        nhi: mdmList[i].nhi,
         listed: true,
         status: 'none'
       });
@@ -117,9 +170,9 @@ function printTable(rows) {
   let i;
   let ready = true;
   let table = document.getElementById("checker-output").getElementsByTagName("tbody")[0];
-
+  
   // Clear table in DOM
-  table.innerHTML = "";
+  table.innerHTML = '';
 
   function addCell(row, content, index) {
     // Insert a cell in the row at index 0
@@ -198,6 +251,7 @@ function printTable(rows) {
       newRow.classList.add("row-orange");
     }
   }
+  
   // Show the table
   if (document.getElementById("checker-output").getElementsByTagName("td").length > 0) {
     document.getElementById("checker-output").classList.remove("hidden");

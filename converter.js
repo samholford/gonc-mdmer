@@ -473,26 +473,21 @@ const referralRawText = document.getElementById('referralRawText');
 
 referralRawText.addEventListener('drop', async function(event) {
     const file = event.dataTransfer.files[0];
-    const config = {
-        outputErrorToConsole: false,
-        newlineDelimiter: '\n',
-        ignoreNotes: false,
-        putNotesAtLast: false
-    };
     
     if (!file.name.includes(".docx")) {
       showError("Incompatible file type");
     } else {
-      try {
-          const arrayBuffer = await file.arrayBuffer();
-          const result = await officeParser.parseOfficeAsync(arrayBuffer, config);
-          referralRawText.value = result;
-          toggleButton();
-          document.getElementById("submitReferral").click();
-      } catch (error) {
+      const arrayBuffer = await file.arrayBuffer();
+      const processingPromise = mammoth.extractRawText({arrayBuffer: arrayBuffer})
+      .then(function(result){
+        referralRawText.value = result.value;
+        toggleButton();
+        document.getElementById("submitReferral").click();
+      })
+      .catch(function(error) {
           showError(`Error processing ${file.name}:`, error);
-          console.error(`Error processing ${file.name}:`, error);
-      }
+          console.error(error);
+      });
     }
 
 });

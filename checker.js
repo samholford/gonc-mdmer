@@ -1,11 +1,10 @@
-
-
 (function () {
   if (!window.FileReader || !window.ArrayBuffer) {
     showError('This browser does not support the List Checker');
   }
 
   const dropArea = document.getElementById('mdmFileDropArea');
+  const nhiPattern = /([A-Z]\s*[A-Z]\s*[A-Z]\s*\d\s*\d\s*[A-Z0-9]\s*[A-Z0-9])/g; //Allows random spaces between characters
   var mdmList = [], mdmFiles = [];
   var listInputText = '';
   var fileInputText, fileInputTextVersion, filesToProcess;
@@ -68,7 +67,7 @@
         result += stripped + " ";
       }
       // Split by NHI
-      var patientParts = result.split(/([A-Z]{3}\d{4})/);
+      var patientParts = result.split(nhiPattern);
 
       // Find comma
       var commaIndex = patientParts[0].indexOf(",");
@@ -107,7 +106,7 @@
     var cleanString = list.replace(/NDHB|BOPDHB|CMDHB|ADHB|Waikato|LDHB|WDHB|Pvt|DHB/g, "");
     // Split list by NHIs
     // Note split keeps the NHI as every second element e.g. ['raw text', 'NHI', 'raw text', 'NHI']
-    var matches = cleanString.split(/([A-Z]{3}\d{4})/);
+    var matches = cleanString.split(nhiPattern);
     var parsedList = [];
     if (!matches) {
       showError('Failed to parse the MDM list');
@@ -120,7 +119,7 @@
       var line = matches[i];
 
       // Get NHI
-      var nhi = matches[i+1];
+      var nhi = matches[i+1].replace(/\s+/g, ''); // Remove any white space
 
       // Split line by number (DD.)
       var lineSplit = line.split(/\d{1,2}\./);
@@ -322,7 +321,8 @@
                   }
                 } else {
                   // Patient
-                  var nhi = text.match(/[A-Z]{3}[0-9]{4}/g)[0];
+                  var nhi = fileName.match(nhiPattern)[0].replace(/\s+/g, '');
+                  fileName = fileName.replace(nhiPattern, '');
                   // Check for # in filename indicated incomplete
                   if (fileName.substring(0,1) == '#') {
                     fileName = fileName.substring(1);

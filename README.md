@@ -16,9 +16,12 @@ If it is not working. Please [email me](mailto:samholford@gmail.com).
 ## Updating the template
 
 - Replace the .docx template named newPatientTemplate.docx
-- See https://docxtemplater.readthedocs.io/en/latest/tag_types.html for formatting requirements
+- See https://docxtemplater.com/docs/tag-types/ for formatting requirements
 
 ## Changes
+
+14 Apr 2020 Version 1.0
+- First release
 
 31 Oct 2023 Version 1.1
 - Histo heading updated to accepted "Name of the lab"
@@ -29,4 +32,9 @@ If it is not working. Please [email me](mailto:samholford@gmail.com).
 - Fix: List checker not working following change in list format
 
 6 Mar 2024 Version 1.2
-- Feature: Dynamicly correct YY year to YYYY based on current year
+- Feature: Dynamically correct YY year to YYYY based on current year
+
+25 Apr 2025 Version 1.3
+- Compatibility with Midlands referrals
+- Ready for 2026 NHI format changes
+- Library files updated to latest

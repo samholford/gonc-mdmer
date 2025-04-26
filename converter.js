@@ -148,7 +148,7 @@ function generate() {
   }
 
 
-  // Link to the template docx - see https://docxtemplater.readthedocs.io/en/latest/tag_types.html
+  // Link to the template docx (cannot be loaded locally due to security restrictions) - see https://docxtemplater.com/docs/tag-types/
   loadFile("https://samholford.github.io/gonc-mdmer/newPatientTemplate.docx", function(
     error,
     content
@@ -192,7 +192,17 @@ function generate() {
       // Catch compilation errors (errors caused by the compilation of the template : misplaced tags)
       errorHandler(error);
     }
-
+    
+    // Check if this is a Midlands formatted referral
+    const isMidlands = (raw.search("MIDLANDS REFERRAL INFORMATION") > -1) ? true : false;
+    
+    if (isMidlands) {
+      // Remove header from Midlands referrals
+      raw = raw.replace(/Referral - Super regional Gynaecology MDM \(Auckland\)/ig, '');
+      // Remove footer text from Midlands referrals allowing for random spaces in the NHI and the word Generated
+      raw = raw.replace(/N\s*H\s*I\s*:\s*[A-Z]\s*[A-Z]\s*[A-Z]\s*\d\s*\d\s*[A-Z0-9]\s*[A-Z0-9]\s*Date G\s*enerated: \d{1,2} \w{3} \d{4} Page number: \d+ of \d+/gi, '');
+      //raw = raw.replace(/Date G\s*enerated: \d{1,2} \w{3} \d{4} Page number: \d+ of \d+/gi, '');
+    }
 
     // Extract referral content
     Referral["referralDate"] = getText("Date of Referral", "NHI Number", false, true);
@@ -209,12 +219,64 @@ function generate() {
     Referral["gp"] = getText("GP name and address", "HISTORY", true);
 
     Referral["age"] = getText("Age", "Brief history", true);
-    Referral["history"] = getText("Brief History", /(co morbidities|co-morbidities)/, true);
+    
+    if (isMidlands) {
+      Referral["history"] = getText("Brief History", "MIDLANDS REFERRAL", true);
+      Referral["menopause"] = getText("Menopausal Status", "Gravidity");      
+      Referral["gravidity"] = getText("Gravidity", "Parity");
+      Referral["parity"] = getText("Parity", "Abortus");
+      Referral["abortus"] = getText("Abortus", "Smoking Status");
+      Referral["pregnancies"] = (isNaN(parseInt(Referral["gravidity"]))) ? "" : "G" + parseInt(Referral["gravidity"]);
+      Referral["pregnancies"] += (isNaN(parseInt(Referral["parity"]))) ? "" : "P" + parseInt(Referral["parity"]);
+      Referral["pregnancies"] += (isNaN(parseInt(Referral["abortus"]))) ? "" : "A" + parseInt(Referral["abortus"]);
+      Referral["smoking"] = getText("Smoking Status", "Alcohol History");
+      Referral["alcohol"] = getText("Alcohol History", "Family History");
+      Referral["familyHx"] = getText("Family History", "Frailty/G8 Score");
+      // Frailty, psychosocial, and preferences are inconsistently ordered in the referral so must be combined.
+      Referral["social"] = getText("Frailty/G8 Score", "Co-morbidities");
+    } else {
+      Referral["history"] = getText("Brief History", /(co morbidities|co-morbidities)/, true);
+    }
+    
     Referral["comorbidities"] = getText("morbidities", "Tumour", true);
     Referral["markers"] = getText("markers", "BMI", true);
     Referral["bmi"] = getText("BMI", "ECOG", true);
     Referral["ecog"] = getText("ECOG", "Ethnicity", true);
     Referral["ethnicity"] = getText("Ethnicity", "RADIOLOGY", true);
+
+    // Array that is transformed into bullets in the docx templates
+    Referral["bullets"] = [
+      { "label": "Age", "value": Referral["age"] },
+      { "label": "Brief history", "value": Referral["history"] },
+      { "label": "Co-morbidities", "value": Referral["comorbidities"] },
+      { "label": "Tumour markers", "value": Referral["markers"] },
+      { "label": "BMI", "value": Referral["bmi"] },
+      { "label": "ECOG", "value": Referral["ecog"] },
+      { "label": "Ethnicity", "value": Referral["ethnicity"] }
+    ];
+    
+    // Add populated Midlands referral parameters to the bulleted list
+    if (isMidlands) {
+      if (Referral["menopause"] != "Not provided") {
+        Referral["bullets"].push({ "label": "Menopause status", "value": Referral["menopause"] });
+      }
+      if (Referral["pregnancies"] != "") {
+        Referral["bullets"].push({ "label": "Pregnancies", "value": Referral["pregnancies"] });
+      }
+      if (Referral["smoking"] != "Not provided") {
+        Referral["bullets"].push({ "label": "Smoking status", "value": Referral["smoking"] });
+      }
+      if (Referral["alcohol"] != "Not provided") {
+        Referral["bullets"].push({ "label": "Alcohol history", "value": Referral["alcohol"] });
+      }
+      if (Referral["familyHx"] != "Not provided") {
+        Referral["bullets"].push({ "label": "Family history", "value": Referral["familyHx"] });
+      }
+      Referral["social"] = Referral["social"].replace(/(Frailty\/G8 Score:|Psychosocial or High needs patient consideration:|Patient Preferences and Other Factors:)/g, ''); // Remove social labels
+      if (Referral["social"].trim() != "") {
+        Referral["bullets"].push({ "label": "Social", "value": Referral["social"] });
+      }
+    } 
 
     var split = "WHAT IS THE QUESTION"; // Default end
     var holder = raw;
@@ -256,6 +318,10 @@ function generate() {
           radDHB: getText("Location", "Key findings", true),
           radFindings: getText("Findings", "LOOPEND", true)
         };
+        
+        // Remove preamble before "Findings:" and sign off
+        obj["radFindings"] = obj["radFindings"].replace(/^.*?Findings:/i, '').replace(/(Reported by|This final report has been electronically|Electronically signed by).*$/, '');
+        
         if (
           obj["radType"] != "Type not provided" ||
           obj["radFindings"] != "Not provided"
@@ -344,13 +410,9 @@ function generate() {
       console.log(Referral);
     }
 
-    // set the template variables from the Referral
-    doc.setData(Referral);
-
-
     try {
-      // render the document (replace all occurences of {first_name} by John, {last_name} by Doe, ...)
-      doc.render();
+      // render the document (replace all occurrences of {first_name} by John, {last_name} by Doe, ...)
+      doc.render(Referral);
     } catch (error) {
       // Catch rendering errors (errors relating to the rendering of the template : angularParser throws an error)
       errorHandler(error);
@@ -359,7 +421,7 @@ function generate() {
     var firstName = Referral["patientName"].split(/\s(.+)/)[0].toLowerCase(); //everything before the first space
     var lastName = Referral["patientName"].split(/\s(.+)/)[1];
     firstName = firstName[0].toUpperCase() + firstName.slice(1); // Convert firstname is sentence case
-    var fileName = lastName.toUpperCase() + " " + firstName + ".docx";
+    var fileName = lastName.toUpperCase() + " " + firstName + " " + Referral["nhi"] + ".docx";
 
     var out = doc.getZip().generate({
       type: "blob",

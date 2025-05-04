@@ -42,3 +42,7 @@ If it is not working. Please [email me](mailto:samholford@gmail.com).
 27 Apr 2025 Version 1.4
 - Drag and drop a referral docx to immediately parse
 - Mammoth lib implemented to improve reliability of list checker
+
+4 May 2025 Version 1.5
+- Bugfix
+- Tidy up

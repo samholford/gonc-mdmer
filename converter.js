@@ -140,7 +140,7 @@ function generate() {
   }
 
   // Link to the template docx (cannot be loaded locally due to security restrictions) - see https://docxtemplater.com/docs/tag-types/
-  loadFile('https://samholford.github.io/gonc-mdmer/newPatientTemplate.docx', function(
+  loadFile('https://https://goncmdm.operatingsystems.nz/newPatientTemplate.docx', function(
     error,
     content
   ) {
